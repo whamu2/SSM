@@ -14,39 +14,38 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * SpannableString 工具
+ *
  * @author whamu2
  * @date 2018/6/11
  */
 public class SpannableStringManager {
-    private static final String TAG = "SpannableStringMannager";
+    private static final String TAG = SpannableStringManager.class.getSimpleName();
 
     public static class PatternRegex {
         /**
-         * 数字
+         * Number
          */
-        public static final String NUM_REGEX = "^(-?[1-9]\\d*\\.?\\d*)|(-?0\\.\\d*[1-9])|(-?[0])|(-?[0]\\.\\d*)$";
+        static final String NUM_REGEX = "^(-?[1-9]\\d*\\.?\\d*)|(-?0\\.\\d*[1-9])|(-?[0])|(-?[0]\\.\\d*)$";
         /**
+         * Expression
          * 表情[大笑]
          */
-        public static final String EXPRESSION_PATTERN = "\\[[^\\]]+\\]";
+        static final String EXPRESSION_PATTERN = "\\[[^\\]]+\\]";
         /**
-         * 网址
+         * web site
          */
-        public static final String URL_PATTERN = "(([hH]ttp[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)";
-
+        static final String URL_PATTERN = "(([hH]ttp[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)";
     }
 
     /**
-     * 点击监听
+     * 点击关键文字事件监听
      */
     public interface SpanClickListener {
         void onSpanClick();
@@ -58,7 +57,7 @@ public class SpannableStringManager {
      * @param color   色值
      * @param content 文本内容
      * @param key     关键字
-     * @return
+     * @return SpannableString
      */
     public static SpannableString getKeyWordSpan(@ColorInt int color, @NonNull String content, @NonNull String key) {
         SpannableString spannableString = new SpannableString(content);
@@ -78,7 +77,6 @@ public class SpannableStringManager {
      * @param spannableString SpannableString
      * @param patten          正则
      * @param start           起始位置
-     * @throws Exception
      */
     private static void dealPattern(@ColorInt int color, SpannableString spannableString, Pattern patten, int start) throws Exception {
         Matcher matcher = patten.matcher(spannableString);
@@ -105,14 +103,12 @@ public class SpannableStringManager {
      *
      * @param content 文本内容
      * @param map     关键字和色值
-     * @return
+     * @return SpannableString
      */
     public static SpannableString getKeyWordSpanArray(@NonNull String content, HashMap<String, Integer> map) {
         SpannableString builder = new SpannableString(content);
 
-        final Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            final Map.Entry<String, Integer> entry = iterator.next();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             final String key = entry.getKey();
             final Integer value = entry.getValue();
 
@@ -123,7 +119,6 @@ public class SpannableStringManager {
                 e.printStackTrace();
             }
         }
-
         return builder;
     }
 
@@ -133,8 +128,8 @@ public class SpannableStringManager {
      * @param color   色值
      * @param content 文本内容
      * @param key     关键字
-     * @param l       点击事件
-     * @return
+     * @param l       点击事件 {@link SpanClickListener}
+     * @return SpannableString
      */
     public static SpannableString getClickSpan(@ColorInt int color, @NonNull String content, @NonNull String key, boolean isUnderline, SpanClickListener l) {
         SpannableString spannableString = new SpannableString(content);
@@ -150,7 +145,7 @@ public class SpannableStringManager {
      * @param spannableString   SpannableString
      * @param patten            正则
      * @param start             起始位置
-     * @param spanClickListener 点击事件
+     * @param spanClickListener 点击事件 {@link SpanClickListener}
      */
     private static void dealClick(final int color, SpannableString spannableString, Pattern patten, int start, boolean isUnderline, final SpanClickListener spanClickListener) {
         Matcher matcher = patten.matcher(spannableString);
@@ -183,146 +178,32 @@ public class SpannableStringManager {
     /**
      * 设置文字背景
      *
-     * @param content 文本内容
-     * @param key     关键字
-     * @param bColor  背景
-     * @param tColor  字体颜色
+     * @param text   文本内容
+     * @param key    关键字
+     * @param bColor 背景
+     * @param tColor 字体颜色
      * @return
      */
-    public static SpannableStringBuilder getSpanTextBackground(@NonNull String content, @NonNull String key, @ColorInt int bColor, @ColorInt int tColor) {
-        int start = content.indexOf(key);
+    public static SpannableStringBuilder getSpanTextBackground(@NonNull String text, @NonNull String key, @ColorInt int bColor, @ColorInt int tColor) {
+        int start = text.indexOf(key);
         int end = start + key.length();
-        SpannableStringBuilder builder = new SpannableStringBuilder(content);
+        SpannableStringBuilder builder = new SpannableStringBuilder(text);
         builder.setSpan(new BackgroundColorSpan(bColor), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // 背景
         builder.setSpan(new ForegroundColorSpan(tColor), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE); // 颜色
         return builder;
     }
 
-
-    // 定义分割常量 （#在集合中的含义是每个元素的分割，|主要用于map类型的集合用于key与value中的分割）
-    private static final String SEP1 = ",";
-    private static final String SEP2 = "|";
-
     /**
-     * List转换String
+     * 在文字上画线
      *
-     * @param list 需要转换的List
-     * @return String转换后的字符串
+     * @param val value
+     * @return SpannableString
      */
-    public static String ListToString(List<?> list) {
-        StringBuilder sb = new StringBuilder();
-        if (list != null && list.size() > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i) == null || list.get(i) == "") {
-                    continue;
-                }
-                // 如果值是list类型则调用自己
-                if (list.get(i) instanceof List) {
-                    sb.append(ListToString((List<?>) list.get(i)));
-                    sb.append(SEP1);
-                } else if (list.get(i) instanceof Map) {
-                    sb.append(MapToString((Map<?, ?>) list.get(i)));
-                    sb.append(SEP1);
-                } else {
-                    sb.append(list.get(i));
-                    sb.append(SEP1);
-                }
-            }
-        }
-        return sb.toString();
+    public static SpannableString getStrikethroughSpan(String val) {
+        SpannableString sp = new SpannableString(val);
+        sp.setSpan(new StrikethroughSpan(), 0, val.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return sp;
     }
-
-    /**
-     * Map转换String
-     *
-     * @param map 需要转换的Map
-     * @return String转换后的字符串
-     */
-    public static String MapToString(Map<?, ?> map) {
-        StringBuilder sb = new StringBuilder();
-        // 遍历map
-        for (Object obj : map.keySet()) {
-            if (obj == null) {
-                continue;
-            }
-            Object value = map.get(obj);
-            if (value instanceof List<?>) {
-                sb.append(obj.toString()).append(SEP1).append(ListToString((List<?>) value));
-                sb.append(SEP2);
-            } else if (value instanceof Map<?, ?>) {
-                sb.append(obj.toString()).append(SEP1).append(MapToString((Map<?, ?>) value));
-                sb.append(SEP2);
-            } else {
-                sb.append(obj.toString()).append(SEP1).append(value.toString());
-                sb.append(SEP2);
-            }
-        }
-        return "M" + sb.toString();
-    }
-
-    /**
-     * String转换Map
-     *
-     * @param mapText 需要转换的字符串
-     * @return Map<?       ,       ?>
-     */
-    public static Map<String, Object> StringToMap(String mapText) {
-
-        if (mapText == null || mapText.equals("")) {
-            return null;
-        }
-        mapText = mapText.substring(1);
-
-        Map<String, Object> map = new HashMap<>();
-        String[] text = mapText.split("\\" + SEP2); // 转换为数组
-        for (String str : text) {
-            String[] keyText = str.split(SEP1); // 转换key与value的数组
-            if (keyText.length < 1) {
-                continue;
-            }
-            String key = keyText[0]; // key
-            String value = keyText[1]; // value
-            if (value.charAt(0) == 'M') {
-                Map<?, ?> map1 = StringToMap(value);
-                map.put(key, map1);
-            } else if (value.charAt(0) == 'L') {
-                List<?> list = StringToList(value);
-                map.put(key, list);
-            } else {
-                map.put(key, value);
-            }
-        }
-        return map;
-    }
-
-    /**
-     * String转换List
-     *
-     * @param listText 需要转换的文本
-     * @return List<?>
-     */
-    public static List<Object> StringToList(String listText) {
-        if (listText == null || listText.equals("")) {
-            return null;
-        }
-        listText = listText.substring(1);
-
-        List<Object> list = new ArrayList<>();
-        String[] text = listText.split(SEP1);
-        for (String str : text) {
-            if (str.charAt(0) == 'M') {
-                Map<?, ?> map = StringToMap(str);
-                list.add(map);
-            } else if (str.charAt(0) == 'L') {
-                List<?> lists = StringToList(str);
-                list.add(lists);
-            } else {
-                list.add(str);
-            }
-        }
-        return list;
-    }
-
 
     /**
      * 判断是否是数字
@@ -336,14 +217,13 @@ public class SpannableStringManager {
     }
 
     /**
-     * 在文字上画线
+     * 判断网址是否合法
      *
-     * @param val value
-     * @return SpannableString
+     * @param val website
+     * @return true/false
      */
-    public static SpannableString getStrikethroughSpan(String val) {
-        SpannableString sp = new SpannableString(val);
-        sp.setSpan(new StrikethroughSpan(), 0, val.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return sp;
+    public static boolean isLegalWebSite(String val) {
+        Pattern pattern = Pattern.compile(PatternRegex.URL_PATTERN);
+        return pattern.matcher(val).matches();
     }
 }
