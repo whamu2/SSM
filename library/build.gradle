@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "2.0"
 
     }
 
@@ -28,7 +28,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    api 'com.android.support:appcompat-v7:27.1.1'
 }
 
 apply from: 'jitpack.gradle'
