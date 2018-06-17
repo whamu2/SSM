@@ -1,7 +1,7 @@
 # SSM 是Android SpannableString 基础管理工具，你可以使用它快速制作颜色、字体大小、点击事件、前景色等等功能。
 
 <p align="left">
-   <a href="https://jitpack.io/#whamu2/SSM/v1.1.0">
+   <a href="https://jitpack.io/#whamu2/SSM">
     <img src="https://jitpack.io/v/whamu2/SSM.svg" alt="Latest Stable Version" />
   </a>
   <a href="https://developer.android.com/about/versions/android-4.4.html">
@@ -24,18 +24,18 @@ Add it in your root build.gradle at the end of repositories:
 
 ```groovy
 allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
+	repositories {
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 
 Step 2. Add the dependency
 
 ```groovy
 dependencies {
-	    implementation 'com.github.whamu2:SSM:v1.1.0'
-	}
+	implementation 'com.github.whamu2:SSM:v1.1.0'
+}
 ```
 
 ## 使用
